@@ -1,0 +1,125 @@
+{% comment %}
+  ============================================================
+  SHOPIFY EMAIL — 2×2 IMAGE GRID BLOCK
+  ============================================================
+  Paste this block anywhere inside your Shopify Email template.
+  All settings live in the assign block below — change values
+  there without touching the HTML/CSS.
+  ============================================================
+{% endcomment %}
+
+{% comment %} ── SETTINGS ─────────────────────────────────── {% endcomment %}
+
+{% assign grid_size       = 600   %}  {% comment %} total width in px (height matches → square) {% endcomment %}
+{% assign gap             = 4     %}  {% comment %} gap between images in px {% endcomment %}
+{% assign border_radius   = 0     %}  {% comment %} corner radius of the whole grid in px {% endcomment %}
+{% assign image_radius    = 0     %}  {% comment %} corner radius of each image cell in px {% endcomment %}
+{% assign grid_opacity    = 1     %}  {% comment %} overall opacity: 0.0 – 1.0 {% endcomment %}
+{% assign image_opacity   = 1     %}  {% comment %} per-image opacity overlay: 0.0 – 1.0 {% endcomment %}
+{% assign bg_color        = '#000000' %} {% comment %} background / gap colour {% endcomment %}
+
+{% comment %} Image URLs (replace with your CDN links or Shopify asset URLs) {% endcomment %}
+{% assign img1_url   = 'https://cdn.shopify.com/s/files/1/0000/0000/files/image-1.jpg' %}
+{% assign img2_url   = 'https://cdn.shopify.com/s/files/1/0000/0000/files/image-2.jpg' %}
+{% assign img3_url   = 'https://cdn.shopify.com/s/files/1/0000/0000/files/image-3.jpg' %}
+{% assign img4_url   = 'https://cdn.shopify.com/s/files/1/0000/0000/files/image-4.jpg' %}
+
+{% comment %} Alt text for accessibility {% endcomment %}
+{% assign img1_alt   = 'Image 1' %}
+{% assign img2_alt   = 'Image 2' %}
+{% assign img3_alt   = 'Image 3' %}
+{% assign img4_alt   = 'Image 4' %}
+
+{% comment %} Optional click-through URLs (leave as '#' for no link) {% endcomment %}
+{% assign img1_link  = '#' %}
+{% assign img2_link  = '#' %}
+{% assign img3_link  = '#' %}
+{% assign img4_link  = '#' %}
+
+{% comment %} ── COMPUTED VALUES ──────────────────────────── {% endcomment %}
+{% assign cell_size = grid_size | minus: gap | divided_by: 2 %}
+
+{% comment %} ── HTML ─────────────────────────────────────── {% endcomment %}
+
+<!--[if mso]>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+<tr><td>
+<![endif]-->
+
+<div style="
+  display: inline-block;
+  width: {{ grid_size }}px;
+  max-width: 100%;
+  line-height: 0;
+  font-size: 0;
+  background-color: {{ bg_color }};
+  border-radius: {{ border_radius }}px;
+  overflow: hidden;
+  opacity: {{ grid_opacity }};
+  mso-line-height-rule: exactly;
+">
+
+  <!--[if mso]>
+  <table role="presentation" cellpadding="0" cellspacing="{{ gap }}" border="0">
+  <tr>
+  <![endif]-->
+
+  {% assign images = img1_url | append: '|' | append: img2_url | append: '|' | append: img3_url | append: '|' | append: img4_url | split: '|' %}
+  {% assign alts   = img1_alt | append: '|' | append: img2_alt | append: '|' | append: img3_alt | append: '|' | append: img4_alt | split: '|' %}
+  {% assign links  = img1_link | append: '|' | append: img2_link | append: '|' | append: img3_link | append: '|' | append: img4_link | split: '|' %}
+
+  {% for i in (0..3) %}
+    {% assign col = i | modulo: 2 %}
+    {% assign row = i | divided_by: 2 %}
+
+    {% comment %} Row separator for Outlook {% endcomment %}
+    {% if col == 0 and i > 0 %}
+      <!--[if mso]></tr><tr><![endif]-->
+    {% endif %}
+
+    <!--[if mso]><td valign="top" width="{{ cell_size }}"><![endif]-->
+
+    <a href="{{ links[i] }}"
+       target="_blank"
+       style="
+         display: inline-block;
+         width: calc(50% - {{ gap | divided_by: 2 }}px);
+         max-width: {{ cell_size }}px;
+         {% if col == 0 %}margin-right: {{ gap }}px;{% endif %}
+         {% if row == 0 %}margin-bottom: {{ gap }}px;{% endif %}
+         vertical-align: top;
+         overflow: hidden;
+         border-radius: {{ image_radius }}px;
+         mso-line-height-rule: exactly;
+         line-height: 0;
+       ">
+      <img
+        src="{{ images[i] }}"
+        alt="{{ alts[i] }}"
+        width="{{ cell_size }}"
+        style="
+          display: block;
+          width: 100%;
+          height: auto;
+          aspect-ratio: 1 / 1;
+          object-fit: cover;
+          opacity: {{ image_opacity }};
+          border: 0;
+          outline: none;
+          text-decoration: none;
+          mso-line-height-rule: exactly;
+        "
+      />
+    </a>
+
+    <!--[if mso]></td><![endif]-->
+
+  {% endfor %}
+
+  <!--[if mso]></tr></table><![endif]-->
+
+</div>
+
+<!--[if mso]>
+</td></tr></table>
+<![endif]-->
